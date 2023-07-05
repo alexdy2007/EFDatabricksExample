@@ -11,6 +11,8 @@ namespace EFBricks.Service.DatabricksAPI
     {
         private string endpoint = "";
         private string PAT = "";
+        private string warehouseID = "";
+
         
         private HttpClient client;
         private readonly IConfiguration _config;
@@ -19,6 +21,7 @@ namespace EFBricks.Service.DatabricksAPI
             _config = config ?? throw new ArgumentNullException(nameof(config));
             endpoint = _config["dbrickSQL:hostEndpoint"];
             PAT = _config["dbrickSQL:PAT"];
+            warehouseID = _config["dbrickSQL:warehouseId"];
 
             client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -29,7 +32,7 @@ namespace EFBricks.Service.DatabricksAPI
         public async IAsyncEnumerable<BronzeAssetDTO> getBronzeAssets(string sql)
         {
 
-            var requestData = new DatabricksAPIContent{statement=sql, warehouse_id="ead10bf07050390f", catalog="water_demos", schema="demo_app"};
+            var requestData = new DatabricksAPIContent{statement=sql, warehouse_id=warehouseID, catalog="water_demos", schema="demo_app"};
 
             var response = await client.PostAsJsonAsync(endpoint, requestData);
 
